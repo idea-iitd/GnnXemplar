@@ -1,0 +1,721 @@
+Class 0 Cluster 9 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(0, 0) >= 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(0, 0) >= 0.5"
+  ],
+  "interpretation": "Cluster nodes have at least 50% of their 1-hop neighbors and at least 50% of their 2-hop neighbors belonging to class 0."
+}
+```
+
+```python
+def classify_node(node_description):
+    if node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(0, 0) >= 0.5 and \
+       node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(0, 0) >= 0.5:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.77
+
+Class 0 Cluster 1014 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(0, 0) >= 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(0, 0) > 0.3"
+  ],
+  "interpretation": "A node is classified as belonging to the cluster if at least 50% of its 1-hop neighbors and more than 30% of its 2-hop neighbors belong to class 0. This rule relaxes the thresholds from the previous iteration to improve recall while maintaining a high degree of precision."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(0, 0)
+    two_hop_freq = node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(0, 0)
+    if one_hop_freq >= 0.5 and two_hop_freq > 0.3:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.86
+
+Class 1 Cluster 770 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(1, 0) >= 0.8",
+    "node['2-hop']['neighbor_class_freq'].get(1, 0) >= 0.6"
+  ],
+  "interpretation": "Cluster nodes have at least 80% of their immediate neighbors belonging to class 1, and at least 60% of their 2-hop neighbors belonging to class 1."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop = node_description.get('1-hop', {}).get('neighbor_class_freq', {})
+    two_hop = node_description.get('2-hop', {}).get('neighbor_class_freq', {})
+
+    rule1 = one_hop.get(1, 0) >= 0.8
+    rule2 = two_hop.get(1, 0) >= 0.6
+
+    if rule1 and rule2:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.895
+
+Class 1 Cluster 213 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(1, 0) > 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(1, 0) > 0.5"
+  ],
+  "interpretation": "Cluster nodes have more than 50% of their 1-hop neighbors and more than 50% of their 2-hop neighbors belonging to class 1."
+}
+```
+
+```python
+def classify_node(node_description):
+    if node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(1, 0) > 0.5 and \
+       node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(1, 0) > 0.5:
+        return 1
+    else:
+        return 0
+
+```
+Accuracy: 0.9025
+
+Class 1 Cluster 222 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(1, 0) >= 0.75",
+    "node['2-hop']['neighbor_class_freq'].get(1, 0) >= 0.5"
+  ],
+  "interpretation": "Cluster nodes have at least 75% of their immediate neighbors belonging to class 1, and at least 50% of their 2-hop neighbors belonging to class 1.  This relaxes the 2-hop neighbor requirement to improve recall (reduce false negatives) while maintaining a relatively high threshold for 1-hop neighbors to control precision (reduce false positives)."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description['1-hop']['neighbor_class_freq'].get(1, 0)
+    two_hop_freq = node_description['2-hop']['neighbor_class_freq'].get(1, 0)
+    if one_hop_freq >= 0.75 and two_hop_freq >= 0.5:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.8625
+
+Class 1 Cluster 218 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(1, 0) >= 0.3",
+    "node['2-hop']['neighbor_class_freq'].get(1, 0) >= 0.3"
+  ],
+  "interpretation": "Cluster nodes tend to have at least 30% of their 1-hop neighbors and at least 30% of their 2-hop neighbors belonging to class 1."
+}
+```
+
+```python
+def classify_node(node_description):
+    if '1-hop' in node_description and 'neighbor_class_freq' in node_description['1-hop'] and \
+       '2-hop' in node_description and 'neighbor_class_freq' in node_description['2-hop']:
+        one_hop_class1 = node_description['1-hop']['neighbor_class_freq'].get(1, 0)
+        two_hop_class1 = node_description['2-hop']['neighbor_class_freq'].get(1, 0)
+        if one_hop_class1 >= 0.3 and two_hop_class1 >= 0.3:
+            return 1
+        else:
+            return 0
+    else:
+        return 0
+
+```
+
+Accuracy: 0.8409939759036145
+
+Class 1 Cluster 469 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(3, 0) >= 0.3",
+    "node['2-hop']['neighbor_class_freq'].get(3, 0) >= 0.5",
+    "node['1-hop']['neighbor_class_freq'].get(1, 0) <= 0.7"
+  ],
+  "interpretation": "Cluster nodes have at least 30% of their 1-hop neighbors and at least 50% of their 2-hop neighbors belonging to class 3.  Additionally, they have at most 70% of their 1-hop neighbors belonging to class 1. This combination of rules helps to distinguish cluster nodes from non-cluster nodes based on their local neighborhood structure."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_class_3 = node_description['1-hop']['neighbor_class_freq'].get(3, 0)
+    two_hop_class_3 = node_description['2-hop']['neighbor_class_freq'].get(3, 0)
+    one_hop_class_1 = node_description['1-hop']['neighbor_class_freq'].get(1, 0)
+
+    if one_hop_class_3 >= 0.3 and two_hop_class_3 >= 0.5 and one_hop_class_1 <= 0.7:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.47211538461538466
+
+Class 2 Cluster 845 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(2, 0) >= 0.7",
+    "node['2-hop']['neighbor_class_freq'].get(2, 0) >= 0.6"
+  ],
+  "interpretation": "Cluster nodes tend to have at least 70% of their immediate neighbors belonging to class 2 and at least 60% of their 2-hop neighbors belonging to class 2."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(2, 0)
+    two_hop_freq = node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(2, 0)
+    if one_hop_freq >= 0.7 and two_hop_freq >= 0.6:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.845
+
+Class 2 Cluster 1397 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(2, 0) > 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(2, 0) > 0.5"
+  ],
+  "interpretation": "Cluster nodes have more than 50% of their 1-hop neighbors belonging to class 2 and more than 50% of their 2-hop neighbors belonging to class 2.  This reflects a strong local neighborhood structure dominated by class 2 nodes."
+}
+```
+
+```python
+def classify_node(node_description):
+    if node_description['1-hop']['neighbor_class_freq'].get(2, 0) > 0.5 and node_description['2-hop']['neighbor_class_freq'].get(2, 0) > 0.5:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.7280701754385965
+
+Class 2 Cluster 1512 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(2, 0) >= 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(2, 0) >= 0.3"
+  ],
+  "interpretation": "Cluster nodes tend to have at least 50% of their immediate neighbors belonging to class 2, and at least 30% of their 2-hop neighbors belonging to class 2."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(2, 0)
+    two_hop_freq = node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(2, 0)
+    if one_hop_freq >= 0.5 and two_hop_freq >= 0.3:
+        return 1
+    else:
+        return 0
+```
+
+**Note:**  The provided node descriptions and accuracy metrics were not sufficient to achieve 95% accuracy for both positive and negative classifications. The above JSON and Python code reflect the best rule set achievable based on the provided data and feedback history, focusing on the `neighbor_class_freq` for class 2 at 1-hop and 2-hop distances.  To improve accuracy further, more data, features, or a more sophisticated rule-based system would be needed.  The current rules prioritize minimizing false positives, as indicated by the feedback history.
+
+Accuracy: 0.7535975609756098
+
+Class 3 Cluster 532 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(3, 0) >= 0.75",
+    "node['2-hop']['neighbor_class_freq'].get(3, 0) >= 0.7"
+  ],
+  "interpretation": "Cluster nodes have at least 75% of their immediate neighbors belonging to class 3 and at least 70% of their 2-hop neighbors belonging to class 3."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description['1-hop']['neighbor_class_freq'].get(3, 0)
+    two_hop_freq = node_description['2-hop']['neighbor_class_freq'].get(3, 0)
+    if one_hop_freq >= 0.75 and two_hop_freq >= 0.7:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.9475
+
+Class 3 Cluster 544 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(3, 0) > 0.8",
+    "node['2-hop']['neighbor_class_freq'].get(3, 0) > 0.8"
+  ],
+  "interpretation": "Cluster nodes have more than 80% of their 1-hop neighbors belonging to class 3 and more than 80% of their 2-hop neighbors belonging to class 3. This reflects the strong prevalence of class 3 nodes in the immediate and extended neighborhood of the concept node and other cluster members."
+}
+```
+
+```python
+def classify_node(node_description):
+    if node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(3, 0) > 0.8 and \
+       node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(3, 0) > 0.8:
+        return 1
+    else:
+        return 0
+
+```
+Accuracy: 0.8975
+
+Class 3 Cluster 502 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(3, 0) == 1.0",
+    "node['2-hop']['neighbor_class_freq'].get(3, 0) >= 0.8"
+  ],
+  "interpretation": "Cluster nodes have all their 1-hop neighbors belonging to class 3 and at least 80% of their 2-hop neighbors belonging to class 3."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(3, 0)
+    two_hop_freq = node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(3, 0)
+
+    if one_hop_freq == 1.0 and two_hop_freq >= 0.8:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.855
+
+Class 3 Cluster 66 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(3, 0) >= 0.85",
+    "node['2-hop']['neighbor_class_freq'].get(3, 0) >= 0.85"
+  ],
+  "interpretation": "Cluster nodes have at least 85% of their 1-hop neighbors belonging to class 3 and at least 85% of their 2-hop neighbors belonging to class 3."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description['1-hop']['neighbor_class_freq'].get(3, 0)
+    two_hop_freq = node_description['2-hop']['neighbor_class_freq'].get(3, 0)
+    if one_hop_freq >= 0.85 and two_hop_freq >= 0.85:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.8975
+
+Class 3 Cluster 748 Summary:
+```json
+{
+  "rules": [
+    "node['features'].lower().count('neural network') > 0 or node['features'].lower().count('neural networks') > 0",
+    "node['features'].lower().count('genetic algorithm') > 0 or node['features'].lower().count('genetic algorithms') > 0",
+    "node['1-hop']['neighbor_class_freq'].get(3, 0) >= 0.5"
+  ],
+  "interpretation": "Cluster nodes mention 'neural network' or 'neural networks' and 'genetic algorithm' or 'genetic algorithms' in their features (case-insensitive). They also have at least 50% of their 1-hop neighbors belonging to class 3. The 2-hop neighbor condition has been removed to increase positive accuracy."
+}
+```
+
+```python
+def classify_node(node_description):
+    features = node_description.get('features', "").lower()
+    one_hop = node_description.get('1-hop', {}).get('neighbor_class_freq', {})
+
+    rule1 = features.count('neural network') > 0 or features.count('neural networks') > 0
+    rule2 = features.count('genetic algorithm') > 0 or features.count('genetic algorithms') > 0
+    rule3 = one_hop.get(3, 0) >= 0.5
+
+    if rule1 and rule2 and rule3:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.6605434782608696
+
+Class 4 Cluster 94 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(4, 0) >= 0.3",
+    "node['2-hop']['neighbor_class_freq'].get(4, 0) >= 0.3",
+    "node['1-hop']['neighbor_class_freq'].get(0, 0) <= 0.6",
+    "node['2-hop']['neighbor_class_freq'].get(0, 0) <= 0.5"
+  ],
+  "interpretation": "Cluster nodes have at least 30% of their 1-hop neighbors and at least 30% of their 2-hop neighbors belonging to class 4. Simultaneously, they have at most 60% of their 1-hop neighbors and at most 50% of their 2-hop neighbors belonging to class 0.  This balances the positive signal from class 4 neighbors with a constraint on the negative signal from class 0 neighbors."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_class_4 = node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(4, 0)
+    two_hop_class_4 = node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(4, 0)
+    one_hop_class_0 = node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(0, 0)
+    two_hop_class_0 = node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(0, 0)
+
+    if (one_hop_class_4 >= 0.3 and 
+        two_hop_class_4 >= 0.3 and 
+        one_hop_class_0 <= 0.6 and 
+        two_hop_class_0 <= 0.5):
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.9025
+
+Class 4 Cluster 405 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(4, 0) >= 0.4",
+    "node['2-hop']['neighbor_class_freq'].get(4, 0) >= 0.4"
+  ],
+  "interpretation": "Cluster nodes have at least 40% of their 1-hop neighbors belonging to class 4 and at least 40% of their 2-hop neighbors belonging to class 4. This rule relaxes the thresholds from previous iterations to capture more cluster nodes while maintaining a good separation from non-cluster nodes."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(4, 0)
+    two_hop_freq = node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(4, 0)
+    if one_hop_freq >= 0.4 and two_hop_freq >= 0.4:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.8905582524271844
+
+Class 4 Cluster 152 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(4, 0) > 0.4",
+    "node['2-hop']['neighbor_class_freq'].get(4, 0) > 0.4"
+  ],
+  "interpretation": "Cluster nodes have more than 40% of their 1-hop neighbors belonging to class 4 and more than 40% of their 2-hop neighbors belonging to class 4. This reflects a strong local neighborhood structure dominated by class 4 nodes."
+}
+```
+
+```python
+def classify_node(node_description):
+    if node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(4, 0) > 0.4 and \
+       node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(4, 0) > 0.4:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.8693681318681319
+
+Class 4 Cluster 206 Summary:
+```json
+{
+  "rules": [
+    "sum(node['1-hop']['neighbor_class_freq'].values()) > 0",
+    "node['1-hop']['neighbor_class_freq'].get(4, 0) >= 0.3",
+    "node['2-hop']['neighbor_class_freq'].get(4, 0) >= 0.1"
+  ],
+  "interpretation": "Cluster nodes have at least one 1-hop neighbor, at least 30% of their 1-hop neighbors are of class 4, and at least 10% of their 2-hop neighbors are of class 4."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description.get('1-hop', {}).get('neighbor_class_freq', {})
+    two_hop_freq = node_description.get('2-hop', {}).get('neighbor_class_freq', {})
+
+    if sum(one_hop_freq.values()) > 0 and \
+       one_hop_freq.get(4, 0) >= 0.3 and \
+       two_hop_freq.get(4, 0) >= 0.1:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.8842553191489362
+
+Class 4 Cluster 331 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(4, 0) > 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(4, 0) > 0.6"
+  ],
+  "interpretation": "Cluster nodes have more than 50% of their 1-hop neighbors belonging to class 4 and more than 60% of their 2-hop neighbors belonging to class 4. This reflects a strong local neighborhood structure dominated by class 4 nodes."
+}
+```
+
+```python
+def classify_node(node_description):
+    if node_description.get('1-hop', {}).get('neighbor_class_freq', {}).get(4, 0) > 0.5 and \
+       node_description.get('2-hop', {}).get('neighbor_class_freq', {}).get(4, 0) > 0.6:
+        return 1
+    else:
+        return 0
+
+```
+Accuracy: 0.7627702702702703
+
+Class 5 Cluster 348 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(5, 0) >= 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(5, 0) >= 0.5"
+  ],
+  "interpretation": "Cluster nodes tend to have at least 50% of their 1-hop neighbors and at least 50% of their 2-hop neighbors belonging to class 5. This rule focuses on the prevalence of class 5 nodes in the immediate and extended neighborhood of the node being classified."
+}
+```
+
+```python
+def classify_node(node_description):
+    try:
+        one_hop_freq = node_description['1-hop']['neighbor_class_freq'].get(5, 0)
+        two_hop_freq = node_description['2-hop']['neighbor_class_freq'].get(5, 0)
+        if one_hop_freq >= 0.5 and two_hop_freq >= 0.5:
+            return 1
+        else:
+            return 0
+    except (KeyError, TypeError):
+        return 0
+
+```
+
+**Explanation of Changes and Rationale:**
+
+The previous iterations focused on increasing the threshold for class 5 neighbor frequency.  However, this led to a decrease in positive accuracy because it excluded too many true cluster nodes. The feedback suggested relaxing the thresholds.  The provided JSON and Python code now uses a threshold of `>= 0.5` for both 1-hop and 2-hop neighbor frequencies of class 5. This is a more lenient threshold that captures a larger portion of the cluster nodes while maintaining a high negative accuracy.  This approach balances the need for high positive and negative accuracy.  Further improvements might involve adding more rules to consider other features or neighborhood characteristics, but this initial revision addresses the core issue of false negatives identified in the feedback.  The `try-except` block handles potential `KeyError` or `TypeError` exceptions that might occur if the input `node_description` is malformed or missing expected keys.
+
+Accuracy: 0.9020979020979021
+
+Class 5 Cluster 111 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(5, 0) >= 0.3",
+    "node['2-hop']['neighbor_class_freq'].get(3, 0) >= 0.4"
+  ],
+  "interpretation": "Cluster nodes tend to have at least 30% of their 1-hop neighbors belonging to class 5 and at least 40% of their 2-hop neighbors belonging to class 3. Lowering the thresholds from the previous iteration increases the sensitivity of the rules, improving the classification of cluster nodes while maintaining a low false positive rate."
+}
+```
+
+```python
+def classify_node(node_description):
+    try:
+        one_hop_class_5 = node_description['1-hop']['neighbor_class_freq'].get(5, 0)
+        two_hop_class_3 = node_description['2-hop']['neighbor_class_freq'].get(3, 0)
+
+        if one_hop_class_5 >= 0.3 and two_hop_class_3 >= 0.4:
+            return 1
+        else:
+            return 0
+    except (KeyError, TypeError):
+        return 0
+
+```
+Accuracy: 0.6376811594202898
+
+Class 5 Cluster 192 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(5, 0) > 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(5, 0) > 0.2"
+  ],
+  "interpretation": "Cluster nodes have more than 50% of their 1-hop neighbors belonging to class 5 and more than 20% of their 2-hop neighbors belonging to class 5.  This reflects the prevalence of class 5 nodes in the immediate and extended neighborhood of the concept node and other cluster members."
+}
+```
+
+```python
+def classify_node(node_description):
+    if node_description['1-hop']['neighbor_class_freq'].get(5, 0) > 0.5 and node_description['2-hop']['neighbor_class_freq'].get(5, 0) > 0.2:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.9182425742574257
+
+Class 5 Cluster 1150 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(5, 0) >= 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(5, 0) >= 0.4"
+  ],
+  "interpretation": "Cluster nodes tend to have at least 50% of their 1-hop neighbors belonging to class 5 and at least 40% of their 2-hop neighbors belonging to class 5."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_class_5 = node_description['1-hop']['neighbor_class_freq'].get(5, 0)
+    two_hop_class_5 = node_description['2-hop']['neighbor_class_freq'].get(5, 0)
+    if one_hop_class_5 >= 0.5 and two_hop_class_5 >= 0.4:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.8832142857142857
+
+Class 6 Cluster 629 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(6, 0) >= 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(6, 0) >= 0.5",
+    "node['1-hop']['neighbor_class_freq'].get(1, 0) < 0.5",
+    "node['1-hop']['neighbor_class_freq'].get(4, 0) < 0.5"
+  ],
+  "interpretation": "Cluster nodes have at least 50% of their 1-hop neighbors belonging to class 6 and at least 50% of their 2-hop neighbors belonging to class 6.  Additionally, they have less than 50% of their 1-hop neighbors belonging to class 1 and less than 50% belonging to class 4."
+}
+```
+
+```python
+def classify_node(node_description):
+    try:
+        one_hop_freq_6 = node_description['1-hop']['neighbor_class_freq'].get(6, 0)
+        two_hop_freq_6 = node_description['2-hop']['neighbor_class_freq'].get(6, 0)
+        one_hop_freq_1 = node_description['1-hop']['neighbor_class_freq'].get(1, 0)
+        one_hop_freq_4 = node_description['1-hop']['neighbor_class_freq'].get(4, 0)
+
+        if (one_hop_freq_6 >= 0.5 and 
+            two_hop_freq_6 >= 0.5 and 
+            one_hop_freq_1 < 0.5 and 
+            one_hop_freq_4 < 0.5):
+            return 1
+        else:
+            return 0
+    except (KeyError, TypeError):
+        return 0
+
+```
+
+Accuracy: 0.8725
+
+Class 6 Cluster 608 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(6, 0) > 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(6, 0) > 0.5"
+  ],
+  "interpretation": "Cluster nodes have more than 50% of their 1-hop neighbors and more than 50% of their 2-hop neighbors belonging to class 6."
+}
+```
+
+```python
+def classify_node(node_description):
+    if node_description['1-hop']['neighbor_class_freq'].get(6, 0) > 0.5 and node_description['2-hop']['neighbor_class_freq'].get(6, 0) > 0.5:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.9260344827586207
+
+Class 6 Cluster 612 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(6, 0) >= 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(6, 0) >= 0.2"
+  ],
+  "interpretation": "Cluster nodes have at least 50% of their immediate neighbors belonging to class 6, and at least 20% of their 2-hop neighbors belonging to class 6. This further relaxes the 2-hop constraint to improve the classification of cluster nodes with more diverse 2-hop neighborhoods while maintaining a high level of accuracy for non-cluster nodes."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description['1-hop']['neighbor_class_freq'].get(6, 0)
+    two_hop_freq = node_description['2-hop']['neighbor_class_freq'].get(6, 0)
+    if one_hop_freq >= 0.5 and two_hop_freq >= 0.2:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.844375
+
+Class 6 Cluster 1365 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(6, 0) >= 0.5",
+    "node['2-hop']['neighbor_class_freq'].get(6, 0) >= 0.5"
+  ],
+  "interpretation": "Cluster nodes have at least 50% of their 1-hop neighbors and at least 50% of their 2-hop neighbors belonging to class 6."
+}
+```
+
+```python
+def classify_node(node_description):
+    one_hop_freq = node_description['1-hop']['neighbor_class_freq'].get(6, 0)
+    two_hop_freq = node_description['2-hop']['neighbor_class_freq'].get(6, 0)
+    if one_hop_freq >= 0.5 and two_hop_freq >= 0.5:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.9275
+
+Class 6 Cluster 614 Summary:
+```json
+{
+  "rules": [
+    "node['1-hop']['neighbor_class_freq'].get(6, 0) == 1.0",
+    "node['2-hop']['neighbor_class_freq'].get(6, 0) >= 0.8"
+  ],
+  "interpretation": "Cluster nodes have all their 1-hop neighbors belonging to class 6 and at least 80% of their 2-hop neighbors belonging to class 6."
+}
+```
+
+```python
+def classify_node(node_description):
+    if node_description['1-hop']['neighbor_class_freq'].get(6, 0) == 1.0 and node_description['2-hop']['neighbor_class_freq'].get(6, 0) >= 0.8:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 0.8841463414634146
+

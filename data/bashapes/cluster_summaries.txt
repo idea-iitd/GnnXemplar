@@ -1,0 +1,719 @@
+Class 0 Cluster 106 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "The node has at least 8 neighbors of class 0.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(0, 0) >= 8"
+    },
+    {
+      "rule_id": 2,
+      "description": "The node does not have neighbors of classes other than 0 and 1.",
+      "condition": "all(c in [0, 1] for c in node_description['1-hop']['neighbor_class_freq'].keys())"
+    }
+  ],
+  "interpretation": "These rules are based on the observation that cluster nodes predominantly connect to neighbors of class 0, and have a limited number of connections to other classes (mostly class 1). Non-cluster nodes, on the other hand, exhibit connections to a wider range of neighbor classes."
+}
+```
+
+```python
+def classify_node(node_description):
+    rule1 = node_description['1-hop']['neighbor_class_freq'].get(0, 0) >= 8
+    rule2 = all(c in [0, 1] for c in node_description['1-hop']['neighbor_class_freq'].keys())
+
+    if rule1 and rule2:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 1.0
+
+Class 0 Cluster 115 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has at least 6 neighbors of class 0 in its 1-hop neighborhood.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(0, 0) >= 6"
+    },
+    {
+      "rule_id": 2,
+      "description": "Check if the node has at most 2 neighbors of classes other than 0 in its 1-hop neighborhood.",
+      "condition": "sum(node_description['1-hop']['neighbor_class_freq'].get(i, 0) for i in range(1, 10)) <=2"
+    }
+  ],
+  "interpretation": "The rules are designed to capture the observation that cluster nodes predominantly connect to nodes of class 0, while non-cluster nodes have a more diverse neighborhood class distribution. Rule 1 ensures a minimum number of class 0 neighbors, while Rule 2 limits the presence of other classes.  A node satisfying both rules is classified as a cluster node (1), otherwise as a non-cluster node (0)."
+}
+```
+
+```python
+def classify_node(node_description):
+    rule1 = node_description['1-hop']['neighbor_class_freq'].get(0, 0) >= 6
+    rule2 = sum(node_description['1-hop']['neighbor_class_freq'].get(i, 0) for i in range(1, 10)) <= 2
+
+    if rule1 and rule2:
+        return 1
+    else:
+        return 0
+
+```
+Accuracy: 1.0
+
+Class 0 Cluster 50 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "The node's 1-hop neighbors predominantly belong to class 0.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'][0] >= 6"
+    },
+    {
+      "rule_id": 2,
+      "description": "The node's 1-hop neighbors do not have a significant presence of classes other than 0.",
+      "condition": "sum(node_description['1-hop']['neighbor_class_freq'].values()) - node_description['1-hop']['neighbor_class_freq'].get(0,0) <= 2"
+    }
+  ],
+  "interpretation": "The rules focus on the frequency of class 0 among the 1-hop neighbors. Cluster nodes show a high frequency of class 0 neighbors with few neighbors from other classes, while non-cluster nodes have a more diverse neighborhood class distribution."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check if the frequency of class 0 neighbors is at least 6.
+    rule1 = node_description['1-hop']['neighbor_class_freq'].get(0, 0) >= 6
+
+    # Rule 2: Check if the sum of frequencies of classes other than 0 is less than or equal to 2.
+    other_classes_sum = sum(node_description['1-hop']['neighbor_class_freq'].values()) - node_description['1-hop']['neighbor_class_freq'].get(0, 0)
+    rule2 = other_classes_sum <= 2
+
+    # If both rules are true, classify as cluster node (1), otherwise non-cluster node (0).
+    if rule1 and rule2:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 1.0
+
+Class 0 Cluster 49 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "The node's 1-hop neighbors predominantly belong to class 0.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'][0] > 10",
+      "weight": 1
+    },
+    {
+      "rule_id": 2,
+      "description": "The node's 1-hop neighbors have a low frequency of classes other than 0.",
+      "condition": "sum(node_description['1-hop']['neighbor_class_freq'].values()) - node_description['1-hop']['neighbor_class_freq'].get(0,0) < 5",
+      "weight": 0.5
+    }
+  ],
+  "interpretation": "The rules prioritize nodes with a high frequency of class 0 neighbors in their 1-hop neighborhood.  A secondary rule penalizes nodes with a diverse set of neighbor classes beyond class 0.  The weights reflect the relative importance of each rule in the classification."
+}
+```
+
+```python
+def classify_node(node_description):
+    rules = [
+        {
+            "rule_id": 1,
+            "description": "The node's 1-hop neighbors predominantly belong to class 0.",
+            "condition": "node_description['1-hop']['neighbor_class_freq'][0] > 10",
+            "weight": 1
+        },
+        {
+            "rule_id": 2,
+            "description": "The node's 1-hop neighbors have a low frequency of classes other than 0.",
+            "condition": "sum(node_description['1-hop']['neighbor_class_freq'].values()) - node_description['1-hop']['neighbor_class_freq'].get(0,0) < 5",
+            "weight": 0.5
+        }
+    ]
+    score = 0
+    for rule in rules:
+        try:
+            if eval(rule["condition"]):
+                score += rule["weight"]
+        except (KeyError, TypeError):
+            pass #Handle missing keys gracefully
+
+    if score >= 1.2:  #Threshold for classification
+        return 1
+    else:
+        return 0
+
+```
+Accuracy: 1.0
+
+Class 0 Cluster 152 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(0, 0) >= 6",
+      "weight": 1,
+      "description": "Checks if the number of neighbors of class 0 is at least 6. This captures the majority of the cluster nodes."
+    },
+    {
+      "rule_id": 2,
+      "condition": "sum(node_description['1-hop']['neighbor_class_freq'].values()) <= 11",
+      "weight": 1,
+      "description": "Checks if the total number of 1-hop neighbors is less than or equal to 11. This helps to exclude nodes with many diverse neighbors."
+    }
+  ],
+  "interpretation": "The rules aim to identify nodes based on their local neighborhood structure. Rule 1 focuses on the frequency of class 0 neighbors, a characteristic prevalent in the cluster. Rule 2 adds a constraint on the total number of neighbors to further refine the classification, addressing the false negatives. The combined score determines the classification: a score of 2 indicates a cluster node (1), otherwise it's a non-cluster node (0)."
+}
+```
+
+```python
+def classify_node(node_description):
+    rules = [
+        {
+            "rule_id": 1,
+            "condition": "node_description['1-hop']['neighbor_class_freq'].get(0, 0) >= 6",
+            "weight": 1
+        },
+        {
+            "rule_id": 2,
+            "condition": "sum(node_description['1-hop']['neighbor_class_freq'].values()) <= 11",
+            "weight": 1
+        }
+    ]
+    score = 0
+    for rule in rules:
+        try:
+            if rule["condition"] == "node_description['1-hop']['neighbor_class_freq'].get(0, 0) >= 6":
+                if node_description['1-hop']['neighbor_class_freq'].get(0, 0) >= 6:
+                    score += rule["weight"]
+            elif rule["condition"] == "sum(node_description['1-hop']['neighbor_class_freq'].values()) <= 11":
+                if sum(node_description['1-hop']['neighbor_class_freq'].values()) <= 11:
+                    score += rule["weight"]
+
+        except (KeyError, TypeError):
+            pass
+
+    if score == 2:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 0.9666666666666667
+
+Class 1 Cluster 330 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if all neighbor classes (0,1,2,3) are present in the 1-hop neighborhood.",
+      "condition": "all_neighbor_classes_present(node_description)",
+      "weight": 1
+    }
+  ],
+  "interpretation": "The rule checks if the node's immediate neighbors contain at least one instance of each of the classes (0, 1, 2, 3). This is observed in all cluster nodes and not in non-cluster nodes.  A node satisfying this condition is classified as belonging to the cluster (1), otherwise not (0)."
+}
+```
+
+```python
+def classify_node(node_description):
+    def all_neighbor_classes_present(node_desc):
+        try:
+            neighbor_freq = node_desc['1-hop']['neighbor_class_freq']
+            return all(c in neighbor_freq for c in [0, 1, 2, 3])
+        except (KeyError, TypeError):
+            return False
+
+    if all_neighbor_classes_present(node_description):
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 1.0
+
+Class 1 Cluster 616 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has exactly one neighbor of class 1, one of class 2, and one of class 3 within 1-hop.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(3, 0) == 1"
+    }
+  ],
+  "interpretation": "The cluster nodes are characterized by having precisely one neighbor each from classes 1, 2, and 3 within their immediate neighborhood.  Non-cluster nodes deviate from this pattern. This rule is based on the observation of the provided data."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check for the specific 1-hop neighbor class frequency pattern.
+    rule1 = (node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and 
+             node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and
+             node_description['1-hop']['neighbor_class_freq'].get(3, 0) == 1)
+
+    if rule1:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 1.0
+
+Class 1 Cluster 315 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "condition": "len(node_description['1-hop']['neighbor_class_freq']) == 4 and all(c in node_description['1-hop']['neighbor_class_freq'] for c in [0, 1, 2, 3])",
+      "weight": 1
+    },
+    {
+      "rule_id": 2,
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(0, 0) <= 2",
+      "weight": 0.5
+    }
+  ],
+  "interpretation": "Rule 1 checks if the node's 1-hop neighbors contain all four classes (0, 1, 2, 3) and only those four classes.  The length check ensures that no other classes are present. Rule 2 ensures that class 0 neighbors are not excessively numerous. The combined score determines the classification. A score of 1.2 or higher classifies the node as belonging to the cluster (1), otherwise it is classified as not belonging to the cluster (0)."
+}
+```
+
+```python
+def classify_node(node_description):
+    rules = [
+        {
+            "rule_id": 1,
+            "condition": "len(node_description['1-hop']['neighbor_class_freq']) == 4 and all(c in node_description['1-hop']['neighbor_class_freq'] for c in [0, 1, 2, 3])",
+            "weight": 1
+        },
+        {
+            "rule_id": 2,
+            "condition": "node_description['1-hop']['neighbor_class_freq'].get(0, 0) <= 2",
+            "weight": 0.5
+        }
+    ]
+    
+    score = 0
+    for rule in rules:
+        try:
+            if all(k in node_description['1-hop']['neighbor_class_freq'] for k in [0,1,2,3]):
+                condition_result = True
+                if "len(node_description['1-hop']['neighbor_class_freq']) == 4" in rule["condition"]:
+                    condition_result = condition_result and (len(node_description['1-hop']['neighbor_class_freq']) == 4)
+                if "node_description['1-hop']['neighbor_class_freq'].get(0, 0) <= 2" in rule["condition"]:
+                    condition_result = condition_result and (node_description['1-hop']['neighbor_class_freq'].get(0, 0) <= 2)
+                if condition_result:
+                    score += rule["weight"]
+        except (KeyError, TypeError):
+            pass
+
+    if score >= 1.2:
+        return 1
+    else:
+        return 0
+```
+Accuracy: 0.95
+
+Class 1 Cluster 340 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if all neighbor classes (0, 1, 2, 3) are present in the 1-hop neighborhood.",
+      "condition": "len(node_description['1-hop']['neighbor_class_freq']) == 4 and all(c in node_description['1-hop']['neighbor_class_freq'] for c in [0, 1, 2, 3])",
+      "weight": 1
+    }
+  ],
+  "interpretation": "The rule is based on the observation that all cluster nodes have a 1-hop neighborhood containing at least one neighbor from each of the classes 0, 1, 2, and 3.  Non-cluster nodes deviate from this pattern. This rule prioritizes the presence of all four classes in the immediate neighborhood."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check for presence of all neighbor classes (0, 1, 2, 3) in 1-hop neighborhood.
+    try:
+        neighbor_freq = node_description['1-hop']['neighbor_class_freq']
+        if len(neighbor_freq) == 4 and all(c in neighbor_freq for c in [0, 1, 2, 3]):
+            return 1  # Node belongs to the cluster
+        else:
+            return 0  # Node does not belong to the cluster
+    except (KeyError, TypeError):
+        return 0 # Handle cases with missing keys or incorrect data format
+
+```
+
+Accuracy: 1.0
+
+Class 1 Cluster 646 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has exactly one neighbor of class 1, one of class 2, and one of class 3 within 1-hop.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(3, 0) == 1"
+    }
+  ],
+  "interpretation": "The cluster nodes are characterized by having precisely one neighbor each from classes 1, 2, and 3 within their immediate neighborhood.  Non-cluster nodes deviate from this pattern. This rule leverages the 'neighbor_class_freq' feature to distinguish between cluster and non-cluster nodes."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check for the specific 1-hop neighbor class frequency pattern
+    rule1 = node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and \
+            node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and \
+            node_description['1-hop']['neighbor_class_freq'].get(3, 0) == 1
+
+    if rule1:
+        return 1
+    else:
+        return 0
+
+```
+
+Accuracy: 1.0
+
+Class 2 Cluster 402 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check for exactly one neighbor of class 1 and one of class 2, and no other classes of neighbors.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and len(node_description['1-hop']['neighbor_class_freq']) == 2"
+    }
+  ],
+  "interpretation": "This rule ensures that a node is classified as a cluster node only if it has exactly one neighbor of class 1, exactly one neighbor of class 2, and no neighbors of any other class. This addresses the false positives from the previous iteration by requiring the exclusivity of classes 1 and 2 in the 1-hop neighborhood.  The len() function on the dictionary ensures only classes 1 and 2 are present."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check for exactly one neighbor of class 1 and one of class 2, and no other classes of neighbors.
+    try:
+        rule1 = node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and len(node_description['1-hop']['neighbor_class_freq']) == 2
+
+        if rule1:
+            return 1
+        else:
+            return 0
+    except (KeyError, TypeError):
+        return 0
+
+```
+
+Accuracy: 1.0
+
+Class 2 Cluster 583 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has exactly one neighbor of class 1 and exactly one neighbor of class 2.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1"
+    },
+    {
+      "rule_id": 2,
+      "description": "Exclude nodes with neighbors of class 3 or more than two neighbor classes in total.",
+      "condition": "len(node_description['1-hop']['neighbor_class_freq']) <= 2 and 3 not in node_description['1-hop']['neighbor_class_freq']"
+    }
+  ],
+  "interpretation": "Rule 1 identifies nodes with the characteristic neighborhood structure observed in the cluster. Rule 2 acts as a filter to exclude nodes that have a different neighborhood structure, thus improving the precision of the classification. The combination of these rules aims for a more accurate classification by focusing on both the presence of specific neighbor classes and the absence of others."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check for exactly one neighbor of class 1 and one neighbor of class 2.
+    rule1 = node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1
+
+    # Rule 2: Exclude nodes with neighbors of class 3 or more than two neighbor classes in total.
+    rule2 = len(node_description['1-hop']['neighbor_class_freq']) <= 2 and 3 not in node_description['1-hop']['neighbor_class_freq']
+
+    # Classification based on both rules.
+    if rule1 and rule2:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 1.0
+
+Class 2 Cluster 378 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check for exactly one neighbor of class 1 and one of class 2, and no other neighbor classes.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and len(node_description['1-hop']['neighbor_class_freq']) == 2"
+    }
+  ],
+  "interpretation": "This rule precisely identifies cluster nodes by requiring the presence of exactly one neighbor of class 1 and exactly one neighbor of class 2 within the immediate neighborhood (1-hop).  The crucial addition of `len(node_description['1-hop']['neighbor_class_freq']) == 2` ensures that no other neighbor classes are present, thus resolving the false positive issue from the previous iteration. This condition effectively distinguishes the cluster nodes from the non-cluster nodes based on their unique neighborhood structure."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check for exactly one neighbor of class 1 and one of class 2, and no other neighbor classes.
+    try:
+        rule1 = node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and len(node_description['1-hop']['neighbor_class_freq']) == 2
+    except (KeyError, TypeError):
+        rule1 = False
+
+    if rule1:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 1.0
+
+Class 2 Cluster 348 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check for exactly one neighbor of class 1 and one of class 2, and no other neighbor classes.",
+      "condition": "(node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and len(node_description['1-hop']['neighbor_class_freq']) == 2)"
+    }
+  ],
+  "interpretation": "This rule precisely identifies cluster nodes by requiring the presence of exactly one neighbor of class 1 and exactly one neighbor of class 2 within the immediate neighborhood.  Crucially, the `len(node_description['1-hop']['neighbor_class_freq']) == 2` condition ensures that no other neighbor classes are present, thus eliminating false positives observed in the previous iteration. This condition directly addresses the feedback by explicitly limiting the neighbor classes to only 1 and 2."
+}
+```
+
+```python
+def classify_node(node_description):
+    """
+    Classifies a node based on the provided rules.
+
+    Args:
+        node_description: A dictionary containing node features.
+
+    Returns:
+        1 if the node belongs to the cluster, 0 otherwise.
+    """
+    
+    # Rule 1: Check for exactly one neighbor of class 1 and one of class 2, and no other neighbor classes.
+    rule1 = (node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and 
+             node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1 and 
+             len(node_description['1-hop']['neighbor_class_freq']) == 2)
+
+    if rule1:
+        return 1
+    else:
+        return 0
+```
+
+Accuracy: 1.0
+
+Class 2 Cluster 682 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has exactly one neighbor of class 1 and exactly one neighbor of class 2 within 1-hop.",
+      "condition": "len(node_description['1-hop']['neighbor_class_freq']) == 2 and node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 1 and node_description['1-hop']['neighbor_class_freq'].get(2, 0) == 1"
+    }
+  ],
+  "interpretation": "The rules are based on the observation that all cluster nodes have exactly one neighbor of class 1 and exactly one neighbor of class 2 within one hop.  Non-cluster nodes deviate from this pattern. This rule is designed to capture this specific neighborhood structure."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check for exactly one neighbor of class 1 and one of class 2 within 1-hop.
+    try:
+        one_hop_neighbors = node_description['1-hop']['neighbor_class_freq']
+        if len(one_hop_neighbors) == 2 and one_hop_neighbors.get(1, 0) == 1 and one_hop_neighbors.get(2, 0) == 1:
+            return 1
+        else:
+            return 0
+    except (KeyError, TypeError):
+        return 0
+
+```
+
+Accuracy: 1.0
+
+Class 3 Cluster 654 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has exactly two neighbors of class 1 within 1-hop.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 2"
+    }
+  ],
+  "interpretation": "The cluster nodes are characterized by having exactly two neighbors of class 1 within one hop.  Non-cluster nodes do not exhibit this specific neighborhood structure. This rule is based solely on the provided node features and local adjacency information."
+}
+```
+
+```python
+def classify_node(node_description):
+    rules = [
+        lambda node_description: node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 2
+    ]
+    
+    for rule in rules:
+        if rule(node_description):
+            return 1
+    return 0
+
+```
+
+Accuracy: 0.975
+
+Class 3 Cluster 649 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has exactly two neighbors of class 1 within 1-hop.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 2 and len(node_description['1-hop']['neighbor_class_freq']) ==1"
+    }
+  ],
+  "interpretation": "The cluster nodes are characterized by having precisely two neighbors of class 1 within one hop distance.  Non-cluster nodes either have a different number of class 1 neighbors or have neighbors of other classes within one hop."
+}
+```
+
+```python
+def classify_node(node_description):
+    """
+    Classifies a node as belonging to the cluster (1) or not (0) based on the provided rules.
+    """
+    # Rule 1: Check for exactly two class 1 neighbors within 1 hop.
+    try:
+        class_1_neighbors = node_description['1-hop']['neighbor_class_freq'].get(1, 0)
+        num_neighbor_classes = len(node_description['1-hop']['neighbor_class_freq'])
+        if class_1_neighbors == 2 and num_neighbor_classes == 1:
+            return 1
+        else:
+            return 0
+    except (KeyError, TypeError):
+        return 0 # Handle cases where the node description is missing necessary keys
+
+```
+
+Accuracy: 1.0
+
+Class 3 Cluster 414 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has exactly two neighbors of class 1 within 1-hop.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 2 and len(node_description['1-hop']['neighbor_class_freq']) == 1"
+    }
+  ],
+  "interpretation": "The cluster nodes are characterized by having precisely two neighbors of class 1 within their immediate neighborhood (1-hop).  No other classes are present in their 1-hop neighborhood. Non-cluster nodes either have a different number of class 1 neighbors, additional neighbor classes within 1-hop, or lack class 1 neighbors altogether."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check if the node has exactly two neighbors of class 1 within 1-hop.
+    # and no other classes are present in the 1-hop neighborhood.
+    try:
+        class_1_count = node_description['1-hop']['neighbor_class_freq'].get(1, 0)
+        num_neighbor_classes = len(node_description['1-hop']['neighbor_class_freq'])
+
+        if class_1_count == 2 and num_neighbor_classes == 1:
+            return 1
+        else:
+            return 0
+    except (KeyError, TypeError):
+        return 0
+
+```
+
+Accuracy: 1.0
+
+Class 3 Cluster 624 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has exactly two 1-hop neighbors of class 1.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 2 and len(node_description['1-hop']['neighbor_class_freq']) == 1"
+    }
+  ],
+  "interpretation": "The cluster nodes are characterized by having precisely two neighbors of class 1 within one hop, and no other neighbor classes.  Non-cluster nodes either have a different number of class 1 neighbors, additional neighbor classes, or lack class 1 neighbors altogether."
+}
+```
+
+```python
+def classify_node(node_description):
+    """
+    Classifies a node as belonging to the cluster (1) or not (0) based on the provided rules.
+    """
+    # Rule 1: Check if the node has exactly two 1-hop neighbors of class 1.
+    try:
+        class_1_neighbors = node_description['1-hop']['neighbor_class_freq'].get(1, 0)
+        num_neighbor_classes = len(node_description['1-hop']['neighbor_class_freq'])
+        if class_1_neighbors == 2 and num_neighbor_classes == 1:
+            return 1
+        else:
+            return 0
+    except (KeyError, TypeError):
+        return 0
+
+```
+
+Accuracy: 1.0
+
+Class 3 Cluster 309 Summary:
+```json
+{
+  "rules": [
+    {
+      "rule_id": 1,
+      "description": "Check if the node has exactly two neighbors of class 1 in its 1-hop neighborhood.",
+      "condition": "node_description['1-hop']['neighbor_class_freq'].get(1, 0) == 2 and len(node_description['1-hop']['neighbor_class_freq']) == 1"
+    }
+  ],
+  "interpretation": "The cluster nodes are characterized by having precisely two neighbors of class 1 within their immediate neighborhood (1-hop).  Non-cluster nodes either have a different number of class 1 neighbors or have neighbors of other classes in their 1-hop neighborhood."
+}
+```
+
+```python
+def classify_node(node_description):
+    # Rule 1: Check for exactly two class 1 neighbors in 1-hop neighborhood.
+    try:
+        class_1_neighbors = node_description['1-hop']['neighbor_class_freq'].get(1, 0)
+        num_neighbor_classes = len(node_description['1-hop']['neighbor_class_freq'])
+
+        if class_1_neighbors == 2 and num_neighbor_classes == 1:
+            return 1  # Node belongs to the cluster
+        else:
+            return 0  # Node does not belong to the cluster
+    except (KeyError, TypeError):
+        return 0 #Handle cases where the node description is missing necessary keys.
+
+```
+
+Accuracy: 1.0
+

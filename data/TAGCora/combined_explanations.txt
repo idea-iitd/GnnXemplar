@@ -1,0 +1,28 @@
+Class 0:
+A publication belongs to the Rule Learning class if its text mentions inductive logic programming (ILP), meta-knowledge, or hypothesis space, or if a large portion of its immediate and extended network of related publications also belong to this class.
+
+
+Class 1:
+A publication belongs to the Neural Networks class if its text mentions neural networks, backpropagation, or related concepts like neurons or activation functions;  and/or if a significant portion of its directly and indirectly connected publications also belong to the Neural Networks class; and/or if it focuses on Independent Component Analysis or Hidden Markov Models.  The presence of keywords related to other machine learning paradigms may decrease the likelihood of classification in this class.
+
+
+Class 2:
+A publication belongs to the Case_Based class if its text mentions keywords like "case-based reasoning," "adaptation," or "planning," or if it frequently cites other Case_Based publications (both directly and indirectly).  Additionally, some Case_Based publications also contain words like "learning" and "explanation".
+
+
+Class 3:
+A publication belongs to the Genetic Algorithms class if its text mentions genetic algorithms, evolutionary algorithms, or genetic programming, and/or if many nearby publications (within one or two connections) also belong to this class.  The presence of specific keywords is a strong indicator, but the surrounding context of similar publications further strengthens the classification.
+
+
+Class 4:
+A publication belongs to the Theory class if it discusses machine learning concepts like Bayesian methods, classifiers, or decision trees used for prediction or classification, and/or if it frequently cites other Theory publications (class 4) in its immediate and extended network of related papers.  The presence of papers on other topics, such as those in class 0, may also be a contributing factor.
+
+
+Class 5:
+A publication belongs to the Reinforcement Learning class if its text mentions "reinforcement learning" or similar concepts like "TD learning," and if a significant portion of its nearby publications (both directly connected and those connected through other publications) also belong to the Reinforcement Learning class.  The presence of certain keywords like "real-time," "online," or "neuro-evolution" further strengthens this classification, while a high proportion of publications from other specific classes in the neighborhood weakens it.
+
+
+Class 6:
+A publication belongs to the Probabilistic Methods class if its text mentions concepts like Bayesian networks, Markov chains, density estimation, probability, Gibbs sampling, or Markov Chain Monte Carlo, or if a significant portion (at least 20-80%, depending on the specific cluster) of its directly and indirectly connected publications also belong to this class.
+
+

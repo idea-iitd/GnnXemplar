@@ -1,0 +1,16 @@
+Class 0:
+Nodes not belonging to a house are characterized by having many (at least 6, often more than 8) neighbors that also don't belong to a house, and only a few (at most 2) neighbors belonging to other parts of the house structure.  This means they are largely isolated from the house structures within the network.
+
+
+Class 1:
+A node in the "middle of the house" class is identified by its immediate neighbors: it must have at least one neighbor from each of the four classes (tip, middle, base, and not in a house).  Additionally, some middle nodes are specifically characterized by having exactly one neighbor each from the tip, base, and not in a house classes, while others may have multiple neighbors from class 0 (not in a house), but not excessively so.
+
+
+Class 2:
+A node is classified as the base of a house in the BASHAPES graph if it is directly connected to exactly one node classified as "middle" and exactly one node classified as "base", and no other types of nodes.
+
+
+Class 3:
+A node is classified as the tip of a house if it is directly connected to exactly two other nodes that are also part of the house structure (class 1), and no other types of nodes are directly connected to it.
+
+
