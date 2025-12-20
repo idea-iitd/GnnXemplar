@@ -1,5 +1,5 @@
 # GnnXemplar: Exemplars to Explanations - Natural Language Rules for Global GNN Interpretability
-![GnnXemplar pipeline](pipeline.png)
+![GnnXemplar pipeline](poster.png)
 
 # Environment
 ```bash
