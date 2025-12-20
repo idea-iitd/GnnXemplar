@@ -1,6 +1,20 @@
 # GnnXemplar: Exemplars to Explanations - Natural Language Rules for Global GNN Interpretability
 ![GnnXemplar pipeline](poster.png)
 
+This repository contains the official implementation of **GnnXemplar**, accepted as an oral presentation at NeurIPS 2025.  
+- **Paper:** https://neurips.cc/virtual/2025/loc/san-diego/poster/116901
+- **Oral presentation:** https://neurips.cc/virtual/2025/loc/san-diego/session/122572
+
+To cite our work, use:
+```
+@inproceedings{armgaan2025gnnxemplar,
+    author = {Armgaan, Burouj and Jain, Eshan and Pandey, Harsh and Chandran, Mahesh and Ranu, Sayan},
+    title = {{GnnXemplar}: Exemplars to Explanations - Natural Language Rules for Global {GNN} Interpretability},
+    booktitle = {Proceedings of the 39th Conference on Neural Information Processing Systems (NeurIPS)},
+    year = {2025}
+}
+```
+
 # Environment
 ```bash
 conda clean -a
